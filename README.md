@@ -12,3 +12,17 @@ Zeld.AI was made in Python 3.5 with the following packages installed via PyPi (p
 	<li>numpy</li>
 	<li>pyautogui</li>
 </ul>
+
+The emulator that the AI used was called FCEUX.  The following list includes the control input scheme for the AI
+<ul>
+	<li>A = L</li>
+	<li>B = K</li>
+	<li>Turbo A = O</li>
+	<li>Turbo B = I</li>
+	<li>Up = W</li>
+	<li>Left = A</li>
+	<li>Down = S</li>
+	<li>Right = D</li>
+	<li>Start = H</li>
+	<li>Select = G</li>
+</ul>
