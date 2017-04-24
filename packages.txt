@@ -1,0 +1,6 @@
+Packages to install to run this
+opencv-python
+Pillow
+tensorflow (Python 3.5)
+numpy
+pyautogui
