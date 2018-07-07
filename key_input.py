@@ -3,15 +3,6 @@ import time
 
 SendInput = ctypes.windll.user32.SendInput
 
-Up = 0x11
-Left = 0x1E
-Down = 0x1F
-Right = 0x20
-Select = 0x22
-Start = 0x23
-B = 0x25
-A = 0x26
-
 # C struct redefinitions
 PUL = ctypes.POINTER(ctypes.c_ulong)
 class KeyBdInput(ctypes.Structure):
@@ -45,16 +36,21 @@ class Input(ctypes.Structure):
 
 # Actuals Functions
 
-def PressKey(hexKeyCode):
+def press(hexKeyCode):
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
     ii_.ki = KeyBdInput( 0, hexKeyCode, 0x0008, 0, ctypes.pointer(extra) )
     x = Input( ctypes.c_ulong(1), ii_ )
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
-def ReleaseKey(hexKeyCode):
+def release(hexKeyCode):
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
     ii_.ki = KeyBdInput( 0, hexKeyCode, 0x0008 | 0x0002, 0, ctypes.pointer(extra) )
     x = Input( ctypes.c_ulong(1), ii_ )
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
+
+def push(button):
+    press(button)
+    time.sleep(0.1)
+    release(button)

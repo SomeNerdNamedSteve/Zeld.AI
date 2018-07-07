@@ -1,28 +1,22 @@
-<h1>Zeld.AI</h1>
+# Zeld.AI
 
-<h2>About</h2>
-	Zeld.AI is an Artificial Intelligence System to play the NES game 'The Legend of Zelda'
+## About
+Zeld.AI is an Artificial Intelligence System to play the NES game 'The Legend of Zelda'
 
-<h2>Technical Aspects</h2>
-Zeld.AI was made in Python 3.5 with the following packages installed via PyPi (pip):
-<ul>
-	<li>opencv-python</li>
-	<li>Pillow</li>
-	<li>tensorflow</li>
-	<li>numpy</li>
-	<li>pyautogui</li>
-</ul>
+## Techical Aspects
+Zeld.AI was made in Python 3.5 with the following packages installed via conda:
+- tensorflow
+- numpy
+- opencv
+- Pillow
 
 The emulator that the AI used was called FCEUX.  The following list includes the control input scheme for the AI
-<ul>
-	<li>A = L</li>
-	<li>B = K</li>
-	<li>Turbo A = O</li>
-	<li>Turbo B = I</li>
-	<li>Up = W</li>
-	<li>Left = A</li>
-	<li>Down = S</li>
-	<li>Right = D</li>
-	<li>Start = H</li>
-	<li>Select = G</li>
-</ul>
+
+- A = L
+- B = K
+- Up = W
+- Left = A
+- Down = S
+- Right = D
+- Start = H
+- Select = G
