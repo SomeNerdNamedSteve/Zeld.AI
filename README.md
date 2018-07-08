@@ -10,7 +10,7 @@ Zeld.AI was made in Python 3.5 with the following packages installed via conda:
 - opencv
 - Pillow
 
-The emulator that the AI used was called FCEUX.  The following list includes the control input scheme for the AI
+The emulator that the AI used was called NEStopia.  The following list includes the control input scheme for the AI
 
 - A = L
 - B = K
@@ -20,3 +20,7 @@ The emulator that the AI used was called FCEUX.  The following list includes the
 - Right = D
 - Start = H
 - Select = G
+
+## Emulator Settings and screen configuration
+- Set the screen size of NEStopia to 2X
+- Place NEStopia in top left-hand corner of main monitor
