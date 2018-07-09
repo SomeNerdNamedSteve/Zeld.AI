@@ -3,10 +3,9 @@ import time
 import numpy as np
 import random
 from time import sleep
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 from key_input import press, release, push
 from nes_input import NESInput
-from pprint import pprint
 
 bouding_box = (1, 74, 241, 314)
 controller = NESInput()
@@ -21,8 +20,7 @@ def main():
         # Data prep for the Neural Network
         
         screencap = np.array(ImageGrab.grab(bbox=bouding_box)) # capture screen
-        input_array = screencap.flatten() # flatten array
-        colored_layers = create_color_layers(input_array, screencap.shape[0], screencap.shape[1])
+        data_input = data_prep_main(screencap)
         
         # Where the real fun is
         step()
@@ -33,76 +31,57 @@ def main():
         # print(1/diff)
         # prev = now
 
+def test_screen():
+    screencap = np.array(ImageGrab.grab(bbox=bouding_box))
+    create_image(screencap, 'window.png')
+    pixel_averages = data_prep_main(screencap)
+    nn_pixel_averages = np.asarray(pixel_averages, dtype=np.uint8)
+    create_image(nn_pixel_averages, 'test.png', resize=True)
+    
+
+def create_image(np_arr, name, resize=False):
+    img = Image.fromarray(np_arr, 'RGB')
+
+    if resize:
+        img = img.resize((240, 240), Image.NEAREST)
+
+    img.save(name)
+
 def step():
     # set control for step
     random_action = random.randrange(0, len(controller.action_space))
     control = controller.action_space[random_action]
     push(control)
 
-def get_average_value(arr):
-    pass
+def data_prep_main(capture):
+    averages = get_average_values(capture)
+    return np.array(averages)
 
-def create_color_layers(np_arr, rows, cols):
-    red_vals = []
-    green_vals = []
-    blue_vals = []
-
-    for i, el in np.ndenumerate(np_arr):
-        curr_color = i[0] % 3
-        if curr_color == 0:
-            red_vals.append(el)
-        elif curr_color == 1:
-            green_vals.append(el)
-        elif curr_color == 2:
-            blue_vals.append(el)
-
-    red_vals = np.array(red_vals).reshape(rows, cols)
-    green_vals = np.array(green_vals).reshape(rows, cols)
-    blue_vals = np.array(blue_vals).reshape(rows, cols)
-
-    return np.array([red_vals, green_vals, blue_vals])
-
-
-
-def test_screen():
-    screencap = np.array(ImageGrab.grab(bbox=bouding_box))
-    input_array = screencap.flatten()
-    colored_layers = create_color_layers(input_array, screencap.shape[0], screencap.shape[1])
-    cv2.imwrite('window.png', cv2.cvtColor(np.array(screencap), cv2.COLOR_BGR2RGB))
-
-def get_to_game():
-    sleep(3)
-    print('starting game')
-    start_to_game_seq = [
-        controller.start,
-        controller.start,
-        controller.right,
-        controller.a,
-        controller.down,
-        controller.right,
-        controller.right,
-        controller.a,
-        controller.right,
-        controller.right,
-        controller.right,
-        controller.right,
-        controller.right,
-        controller.a,
-        controller.select,
-        controller.select,
-        controller.select,
-        controller.start,
-        controller.start
-    ]
+def get_average_values(np_arr, step=10):
     
-    for action in start_to_game_seq:
-        push(action)
-        sleep(0.5)
-        
-    
+    # just to make sure that the screen is square
+    if np_arr.shape[0] != np_arr.shape[1]:
+        raise Exception('Input array much be a square')
 
+    length = np_arr.shape[0]
+    num_squares = length // step
+    output_arr = []
+    
+    for i in range(num_squares):
+        row_min = i * 10
+        row_max = row_min + 10
+        output_row = []
+        for j in range(num_squares):
+            el_min = j * 10
+            el_max = el_min + 10
+            grid = np_arr[row_min:row_max, el_min:el_max]
+            avg = np.average(grid, axis=(0,1))
+            output_row.append(avg)
+
+        output_arr.append(output_row)
+
+    return np.floor(output_arr)
 
 if __name__ == '__main__':
-    # get_to_game()
     # main()
     test_screen()
