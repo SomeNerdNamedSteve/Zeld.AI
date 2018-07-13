@@ -8,13 +8,28 @@ class NESInput():
         self.start = 0x23
         self.b = 0x25
         self.a = 0x26
-        self.action_space = [
-            self.up,
-            self.down,
-            self.left,
-            self.right,
-            self.start,
-            self.select,
-            self.a,
-            self.b
+
+        self.movement_space = [
+            [],
+            [self.up],
+            [self.down],
+            [self.left],
+            [self.right],
+            [self.up, self.left],
+            [self.up, self.right],
+            [self.down, self.left],
+            [self.down, self.right]
+        ]
+
+        self.ab_space = [
+            [],
+            [self.a],
+            [self.b],
+            [self.a, self.b]
+        ]
+
+        self.start_select_space = [
+            [],
+            [self.start],
+            [self.select]
         ]
