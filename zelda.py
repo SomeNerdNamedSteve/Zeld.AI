@@ -15,6 +15,7 @@ def main():
     sleep(3)
     print("Playing the game now!")
     prev = time.time()
+    button_state = []
 
     while(True):
 
@@ -22,13 +23,20 @@ def main():
         image = capture_screen()
         
         #stop pressing buttons
-        
+        if button_state != []:
+            set_button_state(button_state, False)
+            btn_state = []
 
+        
         # Start of actual AI
+
+        button_set = np.random.choice(controller.action_space)
 
         # End of AI
 
         #start_pressing_buttons
+        button_state = controller.action_space[button_set]
+        set_button_state(button_state, False)
 
         # get the framerate
         now = time.time()
@@ -51,6 +59,13 @@ def capture_screen():
     pixels = img.flatten()
 
     return pixels
+
+def set_button_state(btns, flag):
+    for btn in btns:
+        if flag:
+            press(btn)
+        else:
+            release(btn)
 
 if __name__ == '__main__':
     main()
