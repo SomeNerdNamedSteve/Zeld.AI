@@ -12,7 +12,7 @@ controller = NESInput()
 
 
 def main():
-    sleep(3)
+    sleep(5)
     print("Playing the game now!")
     prev = time.time()
     button_state = []
@@ -30,13 +30,13 @@ def main():
         
         # Start of actual AI
 
-        button_set = np.random.choice(controller.action_space)
+        
 
         # End of AI
 
         #start_pressing_buttons
         button_state = controller.action_space[button_set]
-        set_button_state(button_state, False)
+        set_button_state(button_state, True)
 
         # get the framerate
         now = time.time()
@@ -54,7 +54,9 @@ def capture_screen():
             'height': 240
         }
 
-        img = np.array(sct.grab(display))
+        img = np.array(sct.grab(display), dtype = np.uint8)
+        grey_img = tf.image.rgb_to_grayscale(img, name=None)
+        print(grey_img)
 
     pixels = img.flatten()
 
