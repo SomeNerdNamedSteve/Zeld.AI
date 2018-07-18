@@ -5,10 +5,10 @@ Zeld.AI is an Artificial Intelligence System to play the NES game 'The Legend of
 
 ## Techical Aspects
 Zeld.AI was made in Python 3.5 with the following packages installed via conda:
-- tensorflow
+- keras
 - numpy
 - opencv
-- Pillow
+- mss
 
 The emulator that the AI used was called NEStopia.  The following list includes the control input scheme for the AI
 
