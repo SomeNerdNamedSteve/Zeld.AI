@@ -4,7 +4,6 @@ from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Input
 from keras.layers.merge import Add, Multiply
 from keras.optimizers import Adam
-import keras.backend as K
 
 import tensorflow as tf
 

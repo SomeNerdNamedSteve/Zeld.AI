@@ -1,21 +1,24 @@
 import time
-import numpy as np
 import mss
 import cv2
 import random
+import keras.backend as K
+import tensorflow as tf
+import numpy as np
 from time import sleep
 from key_input import press, release, push
 from nes_input import NESInput
+from actor_critic import ActorCritic
 from collections import deque
 
-controller = NESInput()
 
-observetime = 5000                          # Number of timesteps we will be acting on the game and observing results
-epsilon = 0.7                              # Probability of doing a random move
-gamma = 0.9                                # Discounted future reward. How much we care about steps further in time
-mb_size = 50
+controller = NESInput()
+ac_model = ActorCritic()
 
 def main(screen):
+
+    session = tf.Session()
+    K.set_session(session)
 
     curr_state = capture_screen(screen)
 
