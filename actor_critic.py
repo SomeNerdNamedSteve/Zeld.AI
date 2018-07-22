@@ -1,4 +1,3 @@
-import gym
 import numpy as np
 from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Input
@@ -11,7 +10,7 @@ import random
 from collections import deque
 
 class ActorCritic:
-    def __init__(self, session, action_space):
+    def __init__(self, session, action_space, observation_space_shape):
 
         # Hyperparameters
         self.learning_rate = 0.001
@@ -20,16 +19,30 @@ class ActorCritic:
         self.gamma = 0.95
         self.tau = 0.125
 
-
         self.session = session # Current session
         self.action_space = action_space
+        self.observation_space_shape = observation_space_shape
         self.memory = deque(maxlen=100000) # memory of the AC model
 
     '''
     Actor Functions
     '''
     def create_actor(self):
-        pass
+
+        #create Neural Network Layers for Actor
+        actor_input = Input(shape=self.observation_space_shape)
+        layer_1 = Dense(240, activation='relu')(actor_input)
+        layer_2 = Dense(480, activation='relu')(layer_1)
+        layer_3 = Dense(240, activation='relu')(layer_2)
+        output = Dense(self.action_space.shape[0], activation='relu')(layer_3)
+
+        # Put them altogether in a model
+        model = Model(input=actor_input, output=output)
+        adam = Adam(lr=self.learning_rate)
+        model.compile(loss='mse', optimizer=adam)
+
+        # return the model and Input
+        return actor_input, model
 
     def _train_actor(self, samples):
         pass

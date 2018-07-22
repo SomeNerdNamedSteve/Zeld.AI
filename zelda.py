@@ -13,13 +13,14 @@ from collections import deque
 
 def main(screen):
 
+    curr_state = capture_screen(screen)
+    observation_space_shape = curr_state.shape
+
     # Config for the AI to run
     controller = NESInput() # Get Controller and control setup
     session = tf.Session() # Create a tensorflow session
     K.set_session(session) # Set session for Keras
-    ac_model = ActorCritic(session) # ActorCritic class initializer
-
-    curr_state = capture_screen(screen)
+    ac_model = ActorCritic(session, observation_space_shape) # ActorCritic class initializer
 
     button_state = []
     countdown(5)
@@ -78,6 +79,11 @@ def button_reset(s):
         set_button_state(s, False)
         s = []
 
+def test_image(screen):
+    display = capture_screen(screen)
+    print(type(display))
+    cv2.imwrite('test.png', display)
+
 if __name__ == '__main__':
     screen = {
         'top': 74,
@@ -85,5 +91,5 @@ if __name__ == '__main__':
         'width': 240,
         'height': 240
     }
-    main(screen)
-    test_image()
+    # main(screen)
+    test_image(screen)
