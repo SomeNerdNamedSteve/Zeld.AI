@@ -24,6 +24,31 @@ class ActorCritic:
         self.observation_space_shape = observation_space_shape
         self.memory = deque(maxlen=100000) # memory of the AC model
 
+        '''
+        Actor portion of constructor
+        '''
+
+        self.actor_state_input, self.actor_model = self.create_actor()
+        _, self.target_actor_model = self.create_actor()
+
+        self.actor_critic_gradient = tf.placeholder(tf.float32,
+                                                    [None, self.action_space.shape])
+
+        actor_weights = self.actor.trainable_weights
+        self.actor_gradients = tf.gradients(self.actor_model.output,
+                                            actor_weights,
+                                            -self.actor_critic_gradient)
+        gradients = zip(self.actor_gradients,
+                        actor_weights)
+
+        self.optimize = tf.train.AdamOptimizer(self.learning_rate).apply_gradients(gradients)
+
+
+
+        '''
+        Critic portion of constructor
+        '''
+
     '''
     Actor Functions
     '''
