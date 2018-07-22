@@ -11,13 +11,13 @@ import random
 from collections import deque
 
 class ActorCritic:
-    def __init__(self):
+    def __init__(self, session):
         self.learning_rate = 0.001
         self.epsilon = 1.0
         self.epsilon_decay = 0.99
         self.gamma = 0.95
         self.tau = 0.125
-
+        self.session = session
         self.memory = deque(maxlen=100000)
 
     '''

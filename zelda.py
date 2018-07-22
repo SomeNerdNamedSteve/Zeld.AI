@@ -11,14 +11,13 @@ from nes_input import NESInput
 from actor_critic import ActorCritic
 from collections import deque
 
-
-controller = NESInput()
-ac_model = ActorCritic()
-
 def main(screen):
 
-    session = tf.Session()
-    K.set_session(session)
+    # Config for the AI to run
+    controller = NESInput() # Get Controller and control setup
+    session = tf.Session() # Create a tensorflow session
+    K.set_session(session) # Set session for Keras
+    ac_model = ActorCritic(session) # ActorCritic class initializer
 
     curr_state = capture_screen(screen)
 
@@ -32,7 +31,7 @@ def main(screen):
     while(True):
         button_reset(button_state)
 
-        # Start of actual AI
+        # Start of AI
 
         button_set = np.random.choice(len(controller.action_space))
 
