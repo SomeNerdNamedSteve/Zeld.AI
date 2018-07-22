@@ -22,5 +22,7 @@ The emulator that the AI used was called NEStopia.  The following list includes 
 - Select = G
 
 ## Emulator Settings and screen configuration
-- Set the screen size of NEStopia to 2X
-- Place NEStopia in top left-hand corner of main monitor
+- Set the screen size of NEStopia to 1X
+
+## Code changes
+- While the goal is to make no changes to the actual algorithm, the only thing that has to be changed is the capture region.

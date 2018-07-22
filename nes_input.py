@@ -15,7 +15,7 @@ class NESInput():
             [self.down],
             [self.left],
             [self.right],
-            [self.select],
+            # [self.select],
             [self.start],
             [self.a],
             [self.b],
