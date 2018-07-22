@@ -17,7 +17,7 @@ mb_size = 50
 
 def main(screen):
 
-    image = capture_screen(screen)
+    curr_state = capture_screen(screen)
 
     button_state = []
     countdown(5)
@@ -39,6 +39,9 @@ def main(screen):
         button_state = controller.action_space[button_set]
         set_button_state(button_state, True)
 
+        # Get new state
+        new_state = capture_screen(screen)
+
         # get the framerate
         now = time.time()
         diff = now - prev
@@ -46,7 +49,7 @@ def main(screen):
         prev = now
 
         # Get Data for next part of loop
-        image = capture_screen(screen)
+        curr_state = new_state
 
         # if cv2.waitKey(25) & 0xFF == ord('q'):
         #     cv2.destroyAllWindows()
