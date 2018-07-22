@@ -31,10 +31,9 @@ class ActorCritic:
         self.actor_state_input, self.actor_model = self.create_actor()
         _, self.target_actor_model = self.create_actor()
 
-        self.actor_critic_gradient = tf.placeholder(tf.float32,
-                                                    [None, self.action_space.shape])
+        self.actor_critic_gradient = tf.placeholder(tf.float32,[None, self.action_space.shape[0]])
 
-        actor_weights = self.actor.trainable_weights
+        actor_weights = self.actor_model.trainable_weights
         self.actor_gradients = tf.gradients(self.actor_model.output,
                                             actor_weights,
                                             -self.actor_critic_gradient)
@@ -43,11 +42,16 @@ class ActorCritic:
 
         self.optimize = tf.train.AdamOptimizer(self.learning_rate).apply_gradients(gradients)
 
-
-
         '''
         Critic portion of constructor
         '''
+
+        self.cs_input, self.ca_input, self.critic_model = self.create_critic()
+        _,_,self.target_critic_model = self.create_critic
+
+        self.critic_gradients = tf.gradients(self.critic_model.output,
+                                             self.ca_input)
+        self.session.run(tf.initialize_all_variables())
 
     '''
     Actor Functions
@@ -56,13 +60,13 @@ class ActorCritic:
 
         #create Neural Network Layers for Actor
         actor_input = Input(shape=self.observation_space_shape)
-        layer_1 = Dense(240, activation='relu')(actor_input)
-        layer_2 = Dense(480, activation='relu')(layer_1)
-        layer_3 = Dense(240, activation='relu')(layer_2)
-        output = Dense(self.action_space.shape[0], activation='relu')(layer_3)
+        actor_l1 = Dense(240, activation='relu')(actor_input)
+        actor_l2 = Dense(480, activation='relu')(actor_l1)
+        actor_l3 = Dense(240, activation='relu')(actor_l2)
+        actor_output = Dense(self.action_space.shape[0], activation='relu')(actor_l3)
 
         # Put them altogether in a model
-        model = Model(input=actor_input, output=output)
+        model = Model(input=actor_input, output=actor_output)
         adam = Adam(lr=self.learning_rate)
         model.compile(loss='mse', optimizer=adam)
 
@@ -70,22 +74,72 @@ class ActorCritic:
         return actor_input, model
 
     def _train_actor(self, samples):
-        pass
+        for sample in samples:
+            curr_state, action, reward, new_state = sample
+            predicted_action = self.actor_model.predict(curr_state)
+            gradients = self.session.run(self.critic_gradients,
+                                         feed_dict={
+                                            self.cs_input: curr_state,
+                                            self.ca_input: predicted_action
+                                         })[0]
+            self.session.run(self.optimize,
+                             feed_dict={
+                                self.actor_state_input: curr_state,
+                                self.actor_critic_gradient: predicted_action
+                             })
 
-    def _update_actor(self):
-        pass
+
+    def _update_target_actor(self):
+        actor_model_weights  = self.actor_model.get_weights()
+        actor_target_weights = self.target_critic_model.get_weights()
+
+        for i in range(len(actor_target_weights)):
+            actor_target_weights[i] = actor_model_weights[i]
+
+        self.target_critic_model.set_weights(actor_target_weights)
 
     '''
     Critic Functions
     '''
-    def create_actor(self):
-        pass
+    def create_critic(self):
+        critic_state_input = Input(shape=self.observation_space_shape)
+        critic_state_l1 = Dense(240, activation='relu')(critic_input)
+        critic_state_l2 = Dense(480)(critic_l1)
+
+        critic_action_input = Input(shape=self.action_space.shape)
+        critic_action_l1 = Dense(480)(critic_action_input)
+
+        merged_input = Add()([critic_state_l2, critic_state_l1])
+        merged_l1 = Dense(240, activation='relu')(merged_input)
+        merged_output = Dense(1, activation='relu')(merged_l1)
+
+        model = Model(input=[critic_state_input, critic_action_input],
+                      output=merged_output)
+        adam = Adam(lr=self.learning_rate)
+        model.compile(loss='mse',
+                      optimizer=adam)
+
+        return critic_state_input, critic_action_input, model
+
 
     def _train_critic(self, samples):
-        pass
+        for sample in samples:
+            curr_state, action, reward, new_state, done = sample
 
-    def _update_critic(self):
-        pass
+            target_action = self.target_actor_model.predict(new_state)
+            future_reward = self.target_critic_model.predict([new_state, target_action])[0][0]
+            reward += self.gamma * future_reward
+            self.critic_model.fit(curr_state, reward, verbose=0)
+
+    def _update_target_critic(self):
+        critic_model_weights  = self.critic_model.get_weights()
+        critic_target_weights = self.critic_target_model.get_weights()
+
+        for i in range(len(critic_target_weights)):
+            critic_target_weights[i] = critic_model_weights[i]
+
+        self.critic_target_model.set_weights(critic_target_weights)
+
 
 
     '''
@@ -96,10 +150,19 @@ class ActorCritic:
         self._update_critic()
 
     def train(self):
-        pass
+        batch_size = 32
+        if len(self.memory) < batch_size: return
+
+        rewards = []
+        samples = random.sample(self.memory, batch_size)
+        self._train_critic(samples)
+        self._train_actor(samples)
 
     def remember(self, curr_state, action, reward, new_state):
         self.memory.append([curr_state, action, reward, new_state])
 
     def act(self, curr_state):
-        pass
+        self.epsilon *= self.epsilon_decay
+        if np.random.random() < self.epsilon:
+            return self.env.action_space.sample()
+        return self.actor_model.predict(curr_state)

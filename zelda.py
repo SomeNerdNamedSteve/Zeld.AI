@@ -20,10 +20,11 @@ def main(screen):
     controller = NESInput() # Get Controller and control setup
     session = tf.Session() # Create a tensorflow session
     K.set_session(session) # Set session for Keras
-    ac_model = ActorCritic(session, observation_space_shape) # ActorCritic class initializer
+    ac_model = ActorCritic(session, controller.action_space, observation_space_shape) # ActorCritic class initializer
 
     button_state = []
-    countdown(5)
+    print("We are good to go! Playing Now")
+    countdown(10)
 
     print("Now Playing")
     prev = time.time()
@@ -91,5 +92,5 @@ if __name__ == '__main__':
         'width': 240,
         'height': 240
     }
-    # main(screen)
-    test_image(screen)
+    main(screen)
+    # test_image(screen)
