@@ -60,13 +60,7 @@ def main(screen):
 # function grabs screen and return a 1-d array of screen
 def capture_screen(display):
     with mss.mss() as sct:
-        img = cv2.cvtColor(np.array(sct.grab(display), dtype = np.uint8), cv2.COLOR_RGBA2RGB)
-        # large = cv2.resize(img, (0,0), fx=4.5, fy=4.5)
-        # cv2.imshow('Seeing Replay', large)
-        # grey_img = tf.image.rgb_to_grayscale(img, name=None)
-        # print(grey_img)
-
-    return img
+        return cv2.cvtColor(np.array(sct.grab(display), dtype = np.uint8), cv2.COLOR_RGBA2RGB)
 
 def set_button_state(btns, flag):
     for btn in btns:
