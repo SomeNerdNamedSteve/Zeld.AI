@@ -1,3 +1,5 @@
+import numpy as np
+
 class NESInput():
     def __init__(self):
         self.up = 0x11
@@ -9,7 +11,7 @@ class NESInput():
         self.b = 0x25
         self.a = 0x26
 
-        self.action_space = [
+        self.action_space = np.array([
             [],
             [self.up],
             [self.down],
@@ -44,4 +46,4 @@ class NESInput():
             [self.up, self.right, self.a, self.b],
             [self.down, self.left, self.a, self.b],
             [self.down, self.right, self.a, self.b]
-        ]
+        ])

@@ -27,7 +27,7 @@ def main(screen):
     print("Now Playing")
     prev = time.time()
 
-    # actual testing loop
+    # RL Loop
     while(True):
         button_reset(button_state)
 
@@ -37,7 +37,7 @@ def main(screen):
 
         # End of AI
 
-        #start_pressing_buttons
+        #start pressing buttons for the AI
         button_state = controller.action_space[button_set]
         set_button_state(button_state, True)
 
@@ -50,17 +50,15 @@ def main(screen):
         # print(1/diff)
         prev = now
 
-        # Get Data for next part of loop
+        # Update curr_state with the new_state
         curr_state = new_state
-
-        # if cv2.waitKey(25) & 0xFF == ord('q'):
-        #     cv2.destroyAllWindows()
-        #     break
 
 # function grabs screen and return a 1-d array of screen
 def capture_screen(display):
     with mss.mss() as sct:
-        return cv2.cvtColor(np.array(sct.grab(display), dtype = np.uint8), cv2.COLOR_RGBA2RGB)
+        return cv2.cvtColor(np.array(sct.grab(display),
+                            dtype = np.uint8),
+                            cv2.COLOR_RGBA2RGB)
 
 def set_button_state(btns, flag):
     for btn in btns:
@@ -76,7 +74,6 @@ def countdown(seconds):
         seconds -= 1
 
 def button_reset(s):
-    #stop pressing buttons
     if s != []:
         set_button_state(s, False)
         s = []

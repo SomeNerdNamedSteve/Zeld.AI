@@ -11,14 +11,19 @@ import random
 from collections import deque
 
 class ActorCritic:
-    def __init__(self, session):
+    def __init__(self, session, action_space):
+
+        # Hyperparameters
         self.learning_rate = 0.001
         self.epsilon = 1.0
         self.epsilon_decay = 0.99
         self.gamma = 0.95
         self.tau = 0.125
-        self.session = session
-        self.memory = deque(maxlen=100000)
+
+
+        self.session = session # Current session
+        self.action_space = action_space
+        self.memory = deque(maxlen=100000) # memory of the AC model
 
     '''
     Actor Functions
